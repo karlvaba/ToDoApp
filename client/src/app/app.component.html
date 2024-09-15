@@ -1,0 +1,9 @@
+<h1>{{title}}</h1>
+
+<ul>
+    @for (todo of todos; track todo.id) {
+        <li>
+            {{todo.id}} - {{todo.description}}
+        </li>
+    }
+</ul>
