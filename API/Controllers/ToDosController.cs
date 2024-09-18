@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using API.DTOs;
 using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,4 +33,47 @@ public class ToDosController(DataContext context) : ControllerBase
 
         return toDoItem;
     }
+    [HttpPost]
+    public async Task<ActionResult<ToDoItem>> Add(TodoDto todoDto) 
+    {
+
+        var toDoItem = new ToDoItem {
+            Description = todoDto.Description,
+        };
+
+        context.ToDos.Add(toDoItem);
+        await context.SaveChangesAsync();
+
+        return toDoItem;
+    }
+    [HttpPost("{id:int}")]
+    public async Task<ActionResult<ToDoItem>> Update(int id, TodoDto todoDto) 
+    {
+        //todo: input validation
+        var toDoItem = await context.ToDos.FindAsync(id);
+
+        if (toDoItem == null) return NotFound();
+
+        toDoItem.Description = todoDto.Description;
+        context.ToDos.Update(toDoItem);
+        await context.SaveChangesAsync();
+
+        return toDoItem;
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<ToDoItem>> Delete(int id) 
+    {
+        var toDoItem = await context.ToDos.FindAsync(id);
+
+        if (toDoItem == null) return NotFound();
+
+       
+        context.ToDos.Remove(toDoItem);
+        await context.SaveChangesAsync();
+
+        return toDoItem;
+    }
+
+
 }
