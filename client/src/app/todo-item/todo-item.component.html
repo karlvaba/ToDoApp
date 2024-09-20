@@ -1,0 +1,8 @@
+<div>
+    <mat-checkbox
+        [checked]="todoData().done"
+        (change)="toggleDone()"
+    >
+        {{todoData().description}}
+    </mat-checkbox>
+</div>

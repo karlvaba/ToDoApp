@@ -1,0 +1,23 @@
+<div style="text-align: center;">
+    <h1>Todo App</h1>
+</div>
+
+<div class="container" style="margin-top: 100px;">
+    <form #searchForm="ngForm" (ngSubmit)="addTodo()" class="d-flex" autocomplete="off" style="margin-bottom: 10px;">
+        <input name="identifier"
+            [(ngModel)]="model.description"
+            class="form-control me-2"
+            placeholder="Enter todo description">
+        <button class="btn btn-outline-success" type="submit">Add</button>
+    </form> 
+    <div>
+        @for (todo of todos; track todo.id) {
+            <app-todo-item 
+                [todoData]="todo" 
+                (onDelete)="deleteTodo($event)"
+                (onToggleDone)="toggleDone($event)"
+            ></app-todo-item>
+            <mat-divider></mat-divider>
+        }
+    </div>    
+</div>

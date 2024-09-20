@@ -10,4 +10,6 @@ public class TodoDto
 {
     [Required]
     public required string Description { get; set; }
+    public string? Deadline { get; set; }
+    public bool Done { get; set; }
 }

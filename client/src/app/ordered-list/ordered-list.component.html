@@ -1,0 +1,6 @@
+<p>ordered-list works!</p>
+<div cdkDropList (cdkDropListDropped)="drop($event)">
+    @for (item of listItems; track item) {
+        <div cdkDrag>{{item}}</div>
+    }
+</div>

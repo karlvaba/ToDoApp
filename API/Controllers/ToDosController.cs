@@ -39,6 +39,10 @@ public class ToDosController(DataContext context) : ControllerBase
 
         var toDoItem = new ToDoItem {
             Description = todoDto.Description,
+            Deadline = todoDto.Deadline,
+            Done = todoDto.Done,
+            CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+            UpdatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
         };
 
         context.ToDos.Add(toDoItem);
@@ -55,6 +59,11 @@ public class ToDosController(DataContext context) : ControllerBase
         if (toDoItem == null) return NotFound();
 
         toDoItem.Description = todoDto.Description;
+        toDoItem.Deadline = todoDto.Deadline;
+        toDoItem.Done = todoDto.Done;
+        toDoItem.UpdatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+
         context.ToDos.Update(toDoItem);
         await context.SaveChangesAsync();
 

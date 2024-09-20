@@ -1,9 +1,3 @@
-<h1>{{title}}</h1>
+<app-home></app-home>
+<app-ordered-list></app-ordered-list>
 
-<ul>
-    @for (todo of todos; track todo.id) {
-        <li>
-            {{todo.id}} - {{todo.description}}
-        </li>
-    }
-</ul>

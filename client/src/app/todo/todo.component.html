@@ -1,0 +1,21 @@
+<li>
+    <a>{{todoData().description}} | </a>
+    <a *ngIf="todoData().deadline; then hasDeadline else noDeadline"></a>
+    <a *ngIf="todoData().done; then done else notDone" ></a>
+    <a (click)="delete()"> Delete</a>
+</li>
+
+<ng-template #hasDeadline> {{todoData().deadline}} | </ng-template>
+<ng-template #noDeadline> Whenever ;) | </ng-template>
+<ng-template #done> '
+   <a (click)="toggleDone()" >
+     Done | 
+   </a> 
+</ng-template>
+<ng-template #notDone> '
+   <a (click)="toggleDone()" >
+     Not done |
+   </a> 
+</ng-template>
+
+
