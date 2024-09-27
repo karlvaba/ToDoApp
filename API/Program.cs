@@ -16,7 +16,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
-    .WithOrigins("http://localhost:4200", "https://localhost:4200"));
+    .WithOrigins("http://localhost:5000", "https://localhost:5001"));
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
  
 app.MapControllers();
 
