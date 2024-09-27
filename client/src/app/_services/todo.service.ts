@@ -10,7 +10,8 @@ export class TodoService {
   baseUrl = 'https://localhost:5001/api'
 
   createTodo(model: any) {
-    return this.http.post(this.baseUrl +'/todos', model)
+    model.done = false
+    return this.http.post(this.baseUrl +'/todos/new', model)
   }
 
   getTodos() {
@@ -22,11 +23,10 @@ export class TodoService {
   }
 
   updateTodo(todo: Todo) {
-    let todoDto : any = {
-      description : todo.description,
-      deadline : todo.deadline,
-      done : !todo.done
-    }
-    return this.http.post(this.baseUrl +'/todos/' + todo.id, todo)
+    return this.http.post(this.baseUrl +'/todos/update', [todo])
+  }
+
+  updateTodos(todos: Todo[]) {
+    return this.http.post(this.baseUrl +'/todos/update', todos)
   }
 }

@@ -1,30 +1,59 @@
-import { Component, input, output } from '@angular/core';
+import { Component, Directive, ElementRef, EventEmitter, HostListener, input, OnInit, Output, output, ViewChild } from '@angular/core';
 import { Todo } from '../_models/todo';
-import {MatCheckboxModule} from '@angular/material/checkbox'; 
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatDividerModule} from '@angular/material/divider';
+import { NgClass, NgIf } from '@angular/common';
+
+import { FormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 
 @Component({
   selector: 'app-todo-item',
   standalone: true,
-  imports: [MatCheckboxModule],
+  imports: [MatCheckboxModule, MatDividerModule, NgIf, FormsModule, DragDropModule, NgClass],
   templateUrl: './todo-item.component.html',
   styleUrl: './todo-item.component.css'
 })
-export class TodoItemComponent {
+export class TodoItemComponent{
+ 
   todoData = input.required<Todo>()
 
   onDelete = output<number>()
   onToggleDone = output<Todo>()
+  onDataChanged = output<Todo>()
+
+  editing : boolean = false
+
+  dragDisabled : boolean = false;
+  expression: any;
+  line: any;
+
 
   toggleDone() : void {
     this.onToggleDone.emit(this.todoData())
   }
 
   delete() {
-    console.log("delete pressed")
     this.onDelete.emit(this.todoData().id)
   }
 
-  log() {
-    console.log(this.todoData())  
+  endEdit(value : string | null) {
+    this.dragDisabled = false;
+    if (this.todoData().description != value && value != null) {
+      this.onDataChanged.emit(
+        {
+          id: this.todoData().id,
+          description: value,
+          deadline: this.todoData().deadline,
+          done: this.todoData().done,
+          sequenceNumber: this.todoData().sequenceNumber
+        })
+      }
+    }
+
+    
+  log(info : any) {
+    console.log(info)  
   }
 }

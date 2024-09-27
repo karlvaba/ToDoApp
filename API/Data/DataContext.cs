@@ -5,6 +5,6 @@ namespace API.Data
 {
     public class DataContext(DbContextOptions options) : DbContext(options)
     { 
-        public DbSet<ToDoItem> ToDos { get; set; }
+        public DbSet<TodoItem> ToDos { get; set; }
     }
 }

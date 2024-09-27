@@ -1,0 +1,30 @@
+div.container {
+    width: 100vw;
+    max-width: 800px;
+}
+
+div.footer {
+    height: 40px;
+}
+
+.new-todo {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(173, 216, 230, 0.164);
+    border-radius: 20px;
+}
+
+.new-todo:hover {
+    background-color: rgba(0, 89, 255, 0.096);
+    cursor: pointer;
+}
+
+.add {
+    width: 70%;
+    height: 70%;
+}

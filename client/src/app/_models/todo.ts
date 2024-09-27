@@ -3,6 +3,5 @@ export interface Todo {
     description: string;
     deadline: string;
     done: boolean;
-    createdAt: string;
-    updatedAt: string;
+    sequenceNumber: number;
 }

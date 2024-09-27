@@ -5,80 +5,96 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using AutoMapper;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ToDosController(DataContext context) : ControllerBase
+public class ToDosController(DataContext context, IMapper mapper) : ControllerBase
 {
+    [HttpGet("health")]
+    public ActionResult<string> Health() {
+        return Ok("API reached");
+    }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ToDoItem>>> GetToDos() 
+    public async Task<ActionResult<IEnumerable<TodoDto>>> GetToDos() 
     {
-        var toDos = await context.ToDos.ToListAsync();
+        var toDos = await context.ToDos.OrderBy(x => x.SequenceNumber).ToListAsync();
 
-        return toDos;
+        var toDosReturned = mapper.Map<IEnumerable<TodoDto>>(toDos);
+
+        return Ok(toDosReturned);
     
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<ToDoItem>> GetToDoItem(int id) 
+    public async Task<ActionResult<TodoDto>> GetToDoItem(int id) 
     {
         var toDoItem = await context.ToDos.FindAsync(id);
 
         if (toDoItem == null) return NotFound();
 
-        return toDoItem;
+        return mapper.Map<TodoDto>(toDoItem);
     }
-    [HttpPost]
-    public async Task<ActionResult<ToDoItem>> Add(TodoDto todoDto) 
+
+    [HttpPost("new")]
+    public async Task<ActionResult<TodoDto>> Add(TodoDto todoDto) 
     {
 
-        var toDoItem = new ToDoItem {
-            Description = todoDto.Description,
-            Deadline = todoDto.Deadline,
-            Done = todoDto.Done,
-            CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-            UpdatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
-        };
+        var toDoItem = mapper.Map<TodoItem>(todoDto);
+        toDoItem.CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+        toDoItem.UpdatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+        toDoItem.SequenceNumber = context.ToDos.Count();
 
         context.ToDos.Add(toDoItem);
         await context.SaveChangesAsync();
 
-        return toDoItem;
+        return todoDto;
     }
-    [HttpPost("{id:int}")]
-    public async Task<ActionResult<ToDoItem>> Update(int id, TodoDto todoDto) 
+    [HttpPost("update")]
+    public async Task<ActionResult<IEnumerable<TodoDto>>> Update(TodoDto[] todoDtos) 
     {
-        //todo: input validation
-        var toDoItem = await context.ToDos.FindAsync(id);
+        var todos = await context.ToDos.Where(entity => 
+            todoDtos.Select(dto => dto.Id).Contains(entity.Id)).
+            ToListAsync();
 
-        if (toDoItem == null) return NotFound();
+        foreach (var todo in todos)
+        {
+            var dto = Array.Find(todoDtos, item => item.Id == todo.Id);
 
-        toDoItem.Description = todoDto.Description;
-        toDoItem.Deadline = todoDto.Deadline;
-        toDoItem.Done = todoDto.Done;
-        toDoItem.UpdatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            if (dto == null) {
+                return NotFound();
+            }
 
+            todo.Description = dto.Description;
+            todo.Deadline = dto.Deadline;
+            todo.Done = dto.Done;
+            todo.SequenceNumber = dto.SequenceNumber;
+        }
 
-        context.ToDos.Update(toDoItem);
         await context.SaveChangesAsync();
 
-        return toDoItem;
+        return Ok(todoDtos);
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<ToDoItem>> Delete(int id) 
+    public async Task<ActionResult<TodoItem>> Delete(int id) 
     {
         var toDoItem = await context.ToDos.FindAsync(id);
 
         if (toDoItem == null) return NotFound();
 
-       
+        var itemsToReoder = await context.ToDos.Where(x => x.SequenceNumber > toDoItem.SequenceNumber).ToListAsync();
         context.ToDos.Remove(toDoItem);
+        foreach (var item in itemsToReoder) {
+            item.SequenceNumber -= 1;
+        }
         await context.SaveChangesAsync();
 
         return toDoItem;

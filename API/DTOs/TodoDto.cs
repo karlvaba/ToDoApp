@@ -8,8 +8,9 @@ namespace API.DTOs;
 
 public class TodoDto
 {
-    [Required]
+    public int Id { get; set; }
     public required string Description { get; set; }
     public string? Deadline { get; set; }
     public bool Done { get; set; }
+    public int SequenceNumber { get; set; }
 }

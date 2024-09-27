@@ -1,8 +1,28 @@
-<div>
-    <mat-checkbox
-        [checked]="todoData().done"
-        (change)="toggleDone()"
+<div 
+    class="container"
+    cdkDrag
+    cdkDragLockAxis="y"
+    [cdkDragDisabled]="this.dragDisabled"
     >
-        {{todoData().description}}
-    </mat-checkbox>
+    <div class="left">
+        <mat-checkbox 
+            [checked]="todoData().done"
+            (change)="toggleDone()">
+        </mat-checkbox>
+    </div>
+    <div
+        [ngClass]="{'line-through': this.todoData().done, 'desc-container': true}"
+        #description
+        spellcheck="false" 
+        contenteditable="true"
+        (focus)="this.dragDisabled=true"
+        (blur)="this.endEdit(description.textContent)"
+        (keydown.enter)="description.blur()"
+        [innerText]="this.todoData().description"
+        (dragstart)="$event.preventDefault()"
+        >
+    </div>        
+    <div class="right" (click)="delete()">
+        <img src="../../assets/images/trash-can.png" alt="">
+    </div>
 </div>
