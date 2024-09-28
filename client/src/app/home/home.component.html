@@ -3,7 +3,7 @@
 </div>
 
 <div class="container">
-    <div cdkDropList (cdkDropListDropped)="drop($event)" class="list-container">
+    <div cdkDropList (cdkDropListDropped)="drop($event)">
         @for (todo of todos; track todo.id) {
             <div>
                 <app-todo-item
@@ -11,11 +11,12 @@
                     (onDelete)="deleteTodo($event)"
                     (onToggleDone)="toggleDone($event)"
                     (onDataChanged)="updateTodo($event)"
+                    (onEndEdit)="addTodo($event + 1)"
             ></app-todo-item>
             </div>
         }
     </div>   
-    <div class="new-todo" (click)="addTodo()">
+    <div class="new-todo" (click)="addTodo(-1)">
         <img class="add" src="../../assets/images/add.png" alt="">
     </div> 
     <div class="footer"></div>  

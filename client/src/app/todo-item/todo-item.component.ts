@@ -22,11 +22,9 @@ export class TodoItemComponent{
   onDelete = output<number>()
   onToggleDone = output<Todo>()
   onDataChanged = output<Todo>()
+  onEndEdit = output<number>();
 
-  editing : boolean = false
 
-  dragDisabled : boolean = false;
-  expression: any;
   line: any;
 
 
@@ -38,20 +36,20 @@ export class TodoItemComponent{
     this.onDelete.emit(this.todoData().id)
   }
 
-  endEdit(value : string | null) {
-    this.dragDisabled = false;
-    if (this.todoData().description != value && value != null) {
+  endEdit(elem: HTMLDivElement) {
+    elem.blur()
+    this.onEndEdit.emit(this.todoData().sequenceNumber);
+    if (this.todoData().description != elem.textContent && elem.textContent != null) {
       this.onDataChanged.emit(
         {
           id: this.todoData().id,
-          description: value,
+          description: elem.textContent,
           deadline: this.todoData().deadline,
           done: this.todoData().done,
           sequenceNumber: this.todoData().sequenceNumber
         })
       }
     }
-
     
   log(info : any) {
     console.log(info)  

@@ -2,8 +2,12 @@
     class="container"
     cdkDrag
     cdkDragLockAxis="y"
-    [cdkDragDisabled]="this.dragDisabled"
     >
+    <div
+        cdkDragHandle
+        >
+        <img src="../../assets/images/drag.png" alt="">
+    </div>
     <div class="left">
         <mat-checkbox 
             [checked]="todoData().done"
@@ -15,9 +19,7 @@
         #description
         spellcheck="false" 
         contenteditable="true"
-        (focus)="this.dragDisabled=true"
-        (blur)="this.endEdit(description.textContent)"
-        (keydown.enter)="description.blur()"
+        (keydown.enter)="this.endEdit(description)"
         [innerText]="this.todoData().description"
         (dragstart)="$event.preventDefault()"
         >

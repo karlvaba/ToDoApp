@@ -4,9 +4,10 @@ import { Todo } from '../_models/todo';
 import { FormsModule } from '@angular/forms';
 import { TodoItemComponent } from "../todo-item/todo-item.component";
 import {MatDividerModule} from '@angular/material/divider'; 
-import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { sequence } from '@angular/animations';
 
 @Component({
   selector: 'app-home',
@@ -31,10 +32,11 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  addTodo() {
+  addTodo(sequenceNumber: number) {
     let newTodo = {
       description: "",
-      done: false
+      done: false,
+      sequenceNumber: sequenceNumber
     }
     this.todoService.createTodo(newTodo).subscribe({
       next: response => {
@@ -46,6 +48,7 @@ export class HomeComponent implements OnInit {
   }
 
   deleteTodo(id: number) {
+
     this.todoService.deleteTodo(id).subscribe({
       next: response => {
         console.log(response)
@@ -78,6 +81,8 @@ export class HomeComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<Todo[]>) {
+    
+
     let movedTodo : Todo = this.todos[event.previousIndex]
     movedTodo.sequenceNumber = event.currentIndex
     let subTodos : Todo[];
@@ -99,8 +104,8 @@ export class HomeComponent implements OnInit {
   
     subTodos.push(movedTodo)
 
-    console.log(subTodos)
-
+    moveItemInArray(this.todos, event.previousIndex, event.currentIndex)
+    
     this.todoService.updateTodos(subTodos).subscribe({
       next: response => {
         console.log(response)

@@ -2,20 +2,19 @@ div.container {
     width: 100%;
     display: flex;
     align-items: center;
-    margin: 10px;
     background-color: rgba(173, 216, 230, 0.164);
     border-radius: 10px;
     flex-direction: row;
     overflow: hidden;
+    margin-bottom: 10px;
 }
 
 .desc-container {
     flex-grow: 1;
-    margin: 10px;
+    margin-right: 10px;
     overflow-wrap: break-word;
     overflow: hidden;
     height: 100%;
-    caret-shape: block;
 }
 
 .left {
@@ -24,13 +23,11 @@ div.container {
     align-items: center;
     display: flex;
     align-items: center;
+    margin-left: 5px;
 }
 
 
-.right {
-    width: max-content;
-    cursor: pointer;
-}
+
 
 .desc-container:hover:not(:focus){
     cursor: pointer;
@@ -49,6 +46,7 @@ div.container {
 
 img {
     width: 20px;
+    cursor: pointer;
 }
 
 .line-through {

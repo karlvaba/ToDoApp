@@ -46,11 +46,19 @@ public class ToDosController(DataContext context, IMapper mapper) : ControllerBa
     [HttpPost("new")]
     public async Task<ActionResult<TodoDto>> Add(TodoDto todoDto) 
     {
-
+        Console.WriteLine("Sent seq number is: " + todoDto.SequenceNumber);
         var toDoItem = mapper.Map<TodoItem>(todoDto);
         toDoItem.CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
         toDoItem.UpdatedAt = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
-        toDoItem.SequenceNumber = context.ToDos.Count();
+        if (todoDto.SequenceNumber == -1) {
+            toDoItem.SequenceNumber = context.ToDos.Count();
+        } else {
+            var itemsToReoder = await context.ToDos.Where(x => x.SequenceNumber >= toDoItem.SequenceNumber).ToListAsync();
+            foreach (var item in itemsToReoder) {
+                item.SequenceNumber += 1;
+        }
+        }
+        
 
         context.ToDos.Add(toDoItem);
         await context.SaveChangesAsync();
@@ -95,6 +103,7 @@ public class ToDosController(DataContext context, IMapper mapper) : ControllerBa
         foreach (var item in itemsToReoder) {
             item.SequenceNumber -= 1;
         }
+
         await context.SaveChangesAsync();
 
         return toDoItem;
